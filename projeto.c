@@ -150,5 +150,6 @@ int main(){
         fscanf(file,"%d",&valores[i]);
     }
     segmentaVetor(quantidade,valores);
+    
     return(0);
 }
