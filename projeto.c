@@ -71,6 +71,18 @@ void Imprime(TipoLista Lista)
 
 /* ========================================================================== */
 
+void imprimiResultado(int numeroSegmentos, int **matriz){
+    printf("Matriz:\n");
+    for(int i=0;i<numeroSegmentos;i++){
+        printf("%d ",matriz[0][i]);
+    }
+    printf("\n");
+    for(int i=0;i<numeroSegmentos;i++){
+        printf("%d ",matriz[1][i]);
+    }
+    printf("\n");
+}
+
 void ordemCrescente(int numeroSegmentos, int **matriz){
     int ordem[numeroSegmentos];
     ordem[0] = matriz[0][0];
@@ -103,6 +115,7 @@ void ordemCrescente(int numeroSegmentos, int **matriz){
             }
         }
     }
+    imprimiResultado(numeroSegmentos,matriz);
 }
 
 
@@ -150,5 +163,5 @@ int main(){
         fscanf(file,"%d",&valores[i]);
     }
     segmentaVetor(quantidade,valores);
-    return(0);
+    
 }
