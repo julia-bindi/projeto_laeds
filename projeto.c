@@ -71,29 +71,23 @@ void Imprime(TipoLista Lista)
 
 /* ========================================================================== */
 
-void imprimiResultado(int numeroSegmentos, int **matriz){
-    printf("Matriz:\n");
-    for(int i=0;i<numeroSegmentos;i++){
-        printf("%d ",matriz[0][i]);
-    }
-    printf("\n");
-    for(int i=0;i<numeroSegmentos;i++){
-        printf("%d ",matriz[1][i]);
-    }
-    printf("\n");
+void imprimiResultado(int numeroSegmentos, TipoLista lista){
+   
 }
 
-void ordemCrescente(int numeroSegmentos, int **matriz){
+void ordemCrescente(int numeroSegmentos, TipoLista lista){
     int ordem[numeroSegmentos];
-    ordem[0] = matriz[0][0];
+    ordem[0] = lista.Primeiro->Prox->Item.Tipo;
     int numerosDistintos = 1;
+    TipoApontador apontador = lista.Primeiro->Prox;
     for(int i=1;i<numeroSegmentos;i++){
+        apontador = apontador->Prox;
         for(int j=0;j<numerosDistintos;j++){
-            if(matriz[0][i] == ordem[j])
+            if(apontador->Item.Tipo == ordem[j])
                 break;
             if(j == numerosDistintos-1){
                 numerosDistintos++;
-                ordem[numerosDistintos-1] = matriz[0][i];
+                ordem[numerosDistintos-1] = apontador->Item.Tipo;
             }
         }
     }
@@ -107,42 +101,50 @@ void ordemCrescente(int numeroSegmentos, int **matriz){
         }
         
     }
+    apontador = lista.Primeiro;
     for(int i=0;i<numeroSegmentos;i++){
+        apontador = apontador->Prox;
         for(int j=0;j<numerosDistintos;j++){
-            if(matriz[0][i] == ordem[j]){
-                matriz[0][i] = j+1;
-                break;
+            if(apontador->Item.Tipo == ordem[j]){
+                apontador->Item.Tipo = j+1;
             }
         }
     }
-    imprimiResultado(numeroSegmentos,matriz);
+    imprimiResultado(numeroSegmentos,lista);
 }
 
 
 void segmentaVetor(int quantidade, int valores[]){
     int numeroSegmentos=1;
-    int *valoresSegmentos = malloc(numeroSegmentos*sizeof(int));
-    int **matriz = malloc(2*sizeof(int*));
+    TipoLista lista;
+    TipoItem item;
+    TipoApontador apontador;
+    FLVazia(&lista);
     int valorAtual = valores[0];
-    valoresSegmentos[0] = valores[0];
+    item.Chave = numeroSegmentos;
+    item.Tipo = valores[0];
+    Insere(item,&lista);
     for(int i=1;i<quantidade;i++){
         if(valores[i] != valorAtual){
             valorAtual = valores[i];
             numeroSegmentos++;
-            valoresSegmentos = realloc(valoresSegmentos,numeroSegmentos*sizeof(int));
-            valoresSegmentos[numeroSegmentos-1]=valorAtual;
+            item.Chave = numeroSegmentos;
+            item.Tipo = valorAtual;
+            Insere(item, &lista);
         }
     }
-    int *repeticaoSegmentos = calloc(numeroSegmentos,sizeof(int));
-    matriz[0] = valoresSegmentos;
+    apontador = lista.Primeiro;
+    int repeticao = 0;
     for(int i=0, j=0; i<quantidade;i++){
-        repeticaoSegmentos[j]++;
-        if(valores[i+1] != valoresSegmentos[j]){
+        repeticao ++;
+        if(valores[i+1] != apontador->Item.Tipo){
             j++;
+            apontador->Item.NumElementos = repeticao;
+            apontador->Prox;
+            repeticao = 0;
         }
     }
-    matriz[1] = repeticaoSegmentos;
-    ordemCrescente(numeroSegmentos,matriz);
+    ordemCrescente(numeroSegmentos,lista);
 }
 
 /* ========================================================================== */
