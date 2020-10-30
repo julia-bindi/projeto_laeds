@@ -95,7 +95,7 @@ void imprimiResultado(int numeroSegmentos, TipoLista lista){
     }
     if(controle == 5){
         printf("Resultado: Padrao encontrado.\n");
-        printf("Ponto medio: %d\n",pontoMedio);
+        printf("Ponto Medio: %d\n",pontoMedio);
     }
     else{
         printf("Resultado: Padrao nao encontrado.\n");
