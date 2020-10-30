@@ -59,7 +59,7 @@ void Imprime(TipoLista Lista){
     TipoApontador Aux;
     Aux = Lista.Primeiro -> Prox;
     while (Aux != NULL){ 
-        printf("%d\n", Aux -> Item.Tipo);
+        printf("%d\n", Aux -> Item.Chave);
         Aux = Aux -> Prox;
     }
 }
@@ -72,12 +72,16 @@ void Imprime(TipoLista Lista){
 
 void imprimiResultado(int numeroSegmentos, TipoLista lista){
     int sequencia[] = {1, 3, 2, 3, 1};
+    int pontoMedio;
     TipoApontador apontador = lista.Primeiro;
     int controle = 0;
     for(int i = 0; i < numeroSegmentos; i++){
         apontador = apontador->Prox;
         if(apontador->Item.Tipo == sequencia[controle]){
             controle++;
+            if(controle == 3){
+                pontoMedio = apontador->Item.PontoMedio;
+            }
             if(controle == 5){
                 break;
             }
@@ -91,6 +95,7 @@ void imprimiResultado(int numeroSegmentos, TipoLista lista){
     }
     if(controle == 5){
         printf("Resultado: Padrao encontrado.\n");
+        printf("Ponto Medio: %d\n",pontoMedio);
     }
     else{
         printf("Resultado: Padrao nao encontrado.\n");
@@ -156,13 +161,17 @@ void segmentaVetor(int quantidade, int valores[]){
         }
     }
     int valor[2];
-    apontador = lista.Primeiro;
+    valor[0] = 0;
+    apontador = lista.Primeiro->Prox;
     int repeticao = 0;
     for(int i=0; i<quantidade;i++){
         repeticao ++;
         if(valores[i+1] != apontador->Item.Tipo){
+            valor[1] = i;
             apontador->Item.NumElementos = repeticao;
+            apontador->Item.PontoMedio = (valor[0] + valor[1]) / 2;
             apontador = apontador->Prox;
+            valor[0] = i + 1;
             repeticao = 0;
         }
     }
