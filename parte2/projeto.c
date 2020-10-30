@@ -10,6 +10,7 @@ typedef struct {
     int Chave;
     int Tipo;
     int NumElementos;
+    int PontoMedio;
 } TipoItem;
 
 typedef struct TipoCelula *TipoApontador;
@@ -139,7 +140,7 @@ void segmentaVetor(int quantidade, int valores[]){
     int numeroSegmentos=1;
     TipoLista lista;
     TipoItem item;
-    // TipoApontador apontador;
+    TipoApontador apontador;
     FLVazia(&lista);
     int valorAtual = valores[0];
     item.Chave = numeroSegmentos;
@@ -154,16 +155,17 @@ void segmentaVetor(int quantidade, int valores[]){
             Insere(item, &lista);
         }
     }
-    // apontador = lista.Primeiro;
-    // int repeticao = 0;
-    // for(int i=0; i<quantidade;i++){
-    //     repeticao ++;
-    //     if(valores[i+1] != apontador->Item.Tipo){
-    //         apontador->Item.NumElementos = repeticao;
-    //         apontador = apontador->Prox;
-    //         repeticao = 0;
-    //     }
-    // }
+    int valor[2];
+    apontador = lista.Primeiro;
+    int repeticao = 0;
+    for(int i=0; i<quantidade;i++){
+        repeticao ++;
+        if(valores[i+1] != apontador->Item.Tipo){
+            apontador->Item.NumElementos = repeticao;
+            apontador = apontador->Prox;
+            repeticao = 0;
+        }
+    }
     ordemCrescente(numeroSegmentos,lista);
 }
 
