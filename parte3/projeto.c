@@ -70,39 +70,56 @@ void Imprime(TipoLista Lista){
 
 /* ========================================================================== */
 
-void imprimiResultado(int numeroSegmentos, TipoLista lista){
-    int sequencia[] = {1, 3, 2, 3, 1};
-    int pontoMedio;
-    TipoApontador apontador = lista.Primeiro;
-    int controle = 0;
-    for(int i = 0; i < numeroSegmentos; i++){
-        apontador = apontador->Prox;
-        if(apontador->Item.Tipo == sequencia[controle]){
-            controle++;
-            if(controle == 3){
-                pontoMedio = apontador->Item.PontoMedio;
-            }
-            if(controle == 5){
-                break;
-            }
-        }
-        else if(apontador->Item.Tipo == sequencia[0]){
-            controle = 1;
-        }
-        else{
-            controle = 0;
+void imprimiResultado(int quantidade, int pontosMedios[], int N){
+    int descarte = 0;
+    for(int i=0; i<quantidade; i++){
+        if(pontosMedios[i] == -1){
+            descarte++;
         }
     }
-    if(controle == 5){
-        printf("Resultado: Padrao encontrado.\n");
-        printf("Ponto Medio: %d\n",pontoMedio);
+    if(((float)descarte)/quantidade > 0.3){
+        printf("Resultado: Formato da pista nao estimado.\n");
     }
     else{
-        printf("Resultado: Padrao nao encontrado.\n");
+        int diferenca[quantidade-1];
+        int q = 0;
+        for(int i=0; i<quantidade-1; i++){
+            if(pontosMedios[i] != -1){
+                if(pontosMedios[i+1] == -1){
+                    diferenca[i] = pontosMedios[i+2] - pontosMedios[i];
+                }
+                else{
+                    diferenca[i] = pontosMedios[i+1] - pontosMedios[i];
+                } 
+                q++;
+            }           
+        }
+        int aumentou = 0;
+        int diminuiu = 0;
+        int permaneceu = 0;
+        int dif;
+        for(int i=0; i<q; i++){
+            dif = diferenca[i+1] - diferenca[i];
+            if(dif > 0)
+                aumentou++;
+            else if(dif < 0)
+                diminuiu++;
+            else
+                permaneceu ++;          
+        }
+        if(aumentou - diminuiu >= -3 && aumentou - diminuiu <= 3){
+            printf("Resultado: Pista em linha reta.\n");
+        }
+        else if(aumentou > diminuiu){
+            printf("Resultado: Curva a direita.\n");
+        }
+        else{
+            printf("Resultado: Curva a esquerda.\n");
+        }
     }
 }
 
-void ordemCrescente(int numeroSegmentos, TipoLista lista){
+TipoLista ordemCrescente(int numeroSegmentos, TipoLista lista){
     int ordem[numeroSegmentos];
     ordem[0] = lista.Primeiro->Prox->Item.Tipo;
     int numerosDistintos = 1;
@@ -137,11 +154,11 @@ void ordemCrescente(int numeroSegmentos, TipoLista lista){
             }
         }
     }
-    imprimiResultado(numeroSegmentos,lista);
+    return lista;
 }
 
 
-void segmentaVetor(int quantidade, int valores[]){
+TipoLista segmentaVetor(int quantidade, int valores[]){
     int numeroSegmentos=1;
     TipoLista lista;
     TipoItem item;
@@ -175,10 +192,57 @@ void segmentaVetor(int quantidade, int valores[]){
             repeticao = 0;
         }
     }
-    ordemCrescente(numeroSegmentos,lista);
+    lista = ordemCrescente(numeroSegmentos,lista);
+    return lista;
 }
 
 /* ========================================================================== */
+
+void pontosMedios(int quantidade, TipoLista linhas[], int N){
+    int pontosMedios[quantidade];
+    int sequencia[] = {1, 3, 2, 3, 1};
+    int pontoMedio;
+    int controle = 0;
+    for(int i = 0; i < quantidade; i++){
+        TipoApontador apontador = linhas[i].Primeiro;
+        for(int j=0; j<linhas[i].Ultimo->Item.Chave; j++){
+            apontador = apontador->Prox;
+            if(apontador->Item.Tipo == sequencia[controle]){
+                controle++;
+                if(controle == 3){
+                    pontoMedio = apontador->Item.PontoMedio;
+                }
+                if(controle == 5){
+                    break;
+                }
+            }
+            else if(apontador->Item.Tipo == sequencia[0]){
+                controle = 1;
+            }
+            else{
+                controle = 0;
+            }
+        }
+        if(controle == 5){
+            pontosMedios[i] = pontoMedio;
+        }
+        else{
+            pontosMedios[i] = -1;
+        }
+    }
+    // printf("L: %d\n", quantidade);   
+    // for (int i = 0; i < quantidade; i++){
+    //     printf("%d: ",i);
+    //     TipoApontador apontador = linhas[i].Primeiro;
+    //     for (int j = 0; j < linhas[i].Ultimo->Item.Chave; j++){
+    //         apontador = apontador->Prox;
+    //         printf("%d ", apontador->Item.Tipo);
+    //     }
+    //     printf("\n");
+    //     printf("Ponto Medio: %d\n", pontosMedios[i]);
+    // }
+    imprimiResultado(quantidade, pontosMedios, N);
+}
 
 int main(){ 
     FILE *file;
@@ -191,9 +255,15 @@ int main(){
     }
     int quantidade;
     fscanf(file,"%d", &quantidade);
-    int valores[quantidade];
+    TipoLista linhas[quantidade];
+    int N;
     for(int i=0; i<quantidade;i++){
-        fscanf(file,"%d",&valores[i]);
+        fscanf(file,"%d",&N);
+        int valores[N];
+        for(int j=0; j<N; j++){
+            fscanf(file,"%d",&valores[j]);
+        }
+        linhas[i] = segmentaVetor(N,valores);
     }
-    segmentaVetor(quantidade,valores);   
+    pontosMedios(quantidade, linhas, N);
 }
