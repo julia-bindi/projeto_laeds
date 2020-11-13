@@ -107,7 +107,8 @@ void imprimiResultado(int quantidade, int pontosMedios[], int N){
             else
                 permaneceu ++;          
         }
-        if(aumentou - diminuiu >= -3 && aumentou - diminuiu <= 3){
+        float erro = 0.3 * (aumentou + diminuiu + permaneceu);
+        if(aumentou - diminuiu >= (-1 * erro) && aumentou - diminuiu <= erro){
             printf("Resultado: Pista em linha reta.\n");
         }
         else if(aumentou > diminuiu){
