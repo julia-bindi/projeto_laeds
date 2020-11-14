@@ -71,13 +71,59 @@ void Imprime(TipoLista Lista){
 
 /* ========================================================================== */
 
-void imprimiResultado(int quantidade, int pontosMedios[], int N){
+void imprimeResultado(int quantidade, int pontosMedios[], int N){
     int descarte = 0;
-    int faixa = 0;
     for(int i=0; i<quantidade; i++){
         if(pontosMedios[i] == -1){
             descarte++;
         }
+    }
+    if(((float)descarte)/quantidade > 0.3){
+        printf("Resultado: Formato da pista nao estimado.\n");
+    }
+    else{
+        int diferenca[quantidade-1];
+        int q = 0;
+        for(int i=0; i<quantidade-1; i++){
+            if(pontosMedios[i] != -1){
+                if(pontosMedios[i+1] == -1){
+                    diferenca[i] = pontosMedios[i+2] - pontosMedios[i];
+                }
+                else{
+                    diferenca[i] = pontosMedios[i+1] - pontosMedios[i];
+                } 
+                q++;
+            }           
+        }
+        int aumentou = 0;
+        int diminuiu = 0;
+        int permaneceu = 0;
+        int dif;
+        for(int i=0; i<q; i++){
+            dif = diferenca[i+1] - diferenca[i];
+            if(dif > 0)
+                aumentou++;
+            else if(dif < 0)
+                diminuiu++;
+            else
+                permaneceu ++;          
+        }
+        float erro = 0.3 * (aumentou + diminuiu + permaneceu);
+        if(aumentou - diminuiu >= (-1 * erro) && aumentou - diminuiu <= erro){
+            printf("Resultado: Pista em linha reta.\n");
+        }
+        else if(aumentou > diminuiu){
+            printf("Resultado: Curva a direita.\n");
+        }
+        else{
+            printf("Resultado: Curva a esquerda.\n");
+        }
+    }
+}
+
+void imprimeResultadoFaixa(int quantidade, int pontosMedios[], int N){
+    int faixa = 0;
+    for(int i=0; i<quantidade; i++){
         if(pontosMedios[i] == -2){
             faixa++;
         }
@@ -88,47 +134,6 @@ void imprimiResultado(int quantidade, int pontosMedios[], int N){
     else{
         printf("Resultado: Pista sem faixa de pedestres\n");
     }
-    // else if(((float)descarte)/quantidade > 0.3){
-    //     printf("Resultado: Formato da pista nao estimado.\n");
-    // }
-    // else{
-    //     int diferenca[quantidade-1];
-    //     int q = 0;
-    //     for(int i=0; i<quantidade-1; i++){
-    //         if(pontosMedios[i] != -1){
-    //             if(pontosMedios[i+1] == -1){
-    //                 diferenca[i] = pontosMedios[i+2] - pontosMedios[i];
-    //             }
-    //             else{
-    //                 diferenca[i] = pontosMedios[i+1] - pontosMedios[i];
-    //             } 
-    //             q++;
-    //         }           
-    //     }
-    //     int aumentou = 0;
-    //     int diminuiu = 0;
-    //     int permaneceu = 0;
-    //     int dif;
-    //     for(int i=0; i<q; i++){
-    //         dif = diferenca[i+1] - diferenca[i];
-    //         if(dif > 0)
-    //             aumentou++;
-    //         else if(dif < 0)
-    //             diminuiu++;
-    //         else
-    //             permaneceu ++;          
-    //     }
-    //     float erro = 0.3 * (aumentou + diminuiu + permaneceu);
-    //     if(aumentou - diminuiu >= (-1 * erro) && aumentou - diminuiu <= erro){
-    //         printf("Resultado: Pista em linha reta.\n");
-    //     }
-    //     else if(aumentou > diminuiu){
-    //         printf("Resultado: Curva a direita.\n");
-    //     }
-    //     else{
-    //         printf("Resultado: Curva a esquerda.\n");
-    //     }
-    // }
 }
 
 TipoLista ordemCrescente(int numeroSegmentos, TipoLista lista){
@@ -255,7 +260,7 @@ void pontosMedios(int quantidade, TipoLista linhas[], int N){
             pontosMedios[i] = -1;
         }
     }
-    imprimiResultado(quantidade, pontosMedios, N);
+    imprimeResultadoFaixa(quantidade, pontosMedios, N);
 }
 
 int main(){ 
