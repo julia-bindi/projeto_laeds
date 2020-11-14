@@ -231,17 +231,6 @@ void pontosMedios(int quantidade, TipoLista linhas[], int N){
             pontosMedios[i] = -1;
         }
     }
-    // printf("L: %d\n", quantidade);   
-    // for (int i = 0; i < quantidade; i++){
-    //     printf("%d: ",i);
-    //     TipoApontador apontador = linhas[i].Primeiro;
-    //     for (int j = 0; j < linhas[i].Ultimo->Item.Chave; j++){
-    //         apontador = apontador->Prox;
-    //         printf("%d ", apontador->Item.Tipo);
-    //     }
-    //     printf("\n");
-    //     printf("Ponto Medio: %d\n", pontosMedios[i]);
-    // }
     imprimiResultado(quantidade, pontosMedios, N);
 }
 
