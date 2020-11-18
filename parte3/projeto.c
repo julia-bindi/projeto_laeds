@@ -158,7 +158,6 @@ TipoLista ordemCrescente(int numeroSegmentos, TipoLista lista){
     return lista;
 }
 
-
 TipoLista segmentaVetor(int quantidade, int valores[]){
     int numeroSegmentos=1;
     TipoLista lista;
